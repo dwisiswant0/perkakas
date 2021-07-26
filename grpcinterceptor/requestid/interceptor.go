@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/kitabisa/perkakas/v2/ctxkeys"
+	"github.com/kitabisa/perkakas/v2/grpcinterceptor"
 	uuid "github.com/satori/go.uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -31,6 +32,23 @@ func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.Una
 	resp, err = handler(ctx, req)
 
 	return
+}
+
+func StreamingServerInterceptor(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	ctx := stream.Context()
+	reqID, err := getRequestID(ctx, GrpcRequestIDKey)
+	if err != nil {
+		return status.Errorf(codes.InvalidArgument, err.Error())
+	}
+
+	if reqID == "" {
+		reqID = uuid.NewV4().String()
+	}
+
+	ctx = context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, reqID)
+	newStream := grpcinterceptor.NewServerStreamWrapper(ctx, stream)
+
+	return handler(srv, newStream)
 }
 
 func getRequestID(ctx context.Context, key string) (val string, err error) {
