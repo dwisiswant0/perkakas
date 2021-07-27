@@ -21,7 +21,9 @@ func TestUnaryInterceptorWithoutRequestID(t *testing.T) {
 		return requestID, nil
 	}
 
-	UnaryServerInterceptor(context.Background(), nil, mocks.UnaryInfo, test)
+	ctx := context.Background()
+	ctx = metadata.NewIncomingContext(ctx, metadata.MD{})
+	UnaryServerInterceptor(ctx, nil, mocks.UnaryInfo, test)
 }
 
 func TestInstanceUnaryInterceptorWithoutRequestID(t *testing.T) {
@@ -33,8 +35,11 @@ func TestInstanceUnaryInterceptorWithoutRequestID(t *testing.T) {
 		return requestID, nil
 	}
 
+	ctx := context.Background()
+	ctx = metadata.NewIncomingContext(ctx, metadata.MD{})
+
 	interceptor := NewInterceptor()
-	interceptor.UnaryServerInterceptor(context.Background(), nil, mocks.UnaryInfo, test)
+	interceptor.UnaryServerInterceptor(ctx, nil, mocks.UnaryInfo, test)
 
 }
 
