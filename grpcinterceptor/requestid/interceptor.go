@@ -24,8 +24,8 @@ var (
 )
 
 // Init creating default interceptor instance
-// this method is not using go init() is to prevent
-// unwanted extra interceptor instance when using this interceptor
+// the reason of not using go init() is to prevent
+// unwanted extra requestID interceptor instance when using this interceptor
 // without default instance
 func Init() {
 	doOnce.Do(func() {
@@ -33,14 +33,14 @@ func Init() {
 	})
 }
 
-// UnaryServerInterceptor calling UnaryServerInterceptor
+// UnaryServerInterceptor calling requestID UnaryServerInterceptor
 // with default interceptor instance
 func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	Init()
 	return instance.UnaryServerInterceptor(ctx, req, info, handler)
 }
 
-// StreamingServerInterceptor calling StreamingServerInterceptor
+// StreamingServerInterceptor calling requestID StreamingServerInterceptor
 // with default interceptor instance
 func StreamingServerInterceptor(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 	Init()
@@ -84,7 +84,7 @@ func NewInterceptor(opts ...Options) *Interceptor {
 	}
 
 	if i.contextKey == "" {
-		i.contextKey = ctxkeys.ContextKey(ctxkeys.CtxXKtbsRequestID)
+		i.contextKey = ctxkeys.CtxXKtbsRequestID
 	}
 
 	return i
