@@ -3,9 +3,10 @@ package requestid
 import (
 	"context"
 	"errors"
+	"sync"
 
 	"github.com/kitabisa/perkakas/v2/ctxkeys"
-	"github.com/kitabisa/perkakas/v2/grpcinterceptor"
+	"github.com/kitabisa/perkakas/v2/grpcinterceptor/wrapper"
 	uuid "github.com/satori/go.uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -13,21 +14,61 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type reqIDcontextKey string
-
 const (
 	GrpcRequestIDKey = "x-ktbs-request-id"
 )
 
+var (
+	instance *Interceptor
+	doOnce   sync.Once
+)
+
+// Init creating default interceptor instance
+// this method is not using go init() is to prevent
+// unwanted extra interceptor instance when using this interceptor
+// without default instance
+func Init() {
+	doOnce.Do(func() {
+		instance = NewInterceptor()
+	})
+}
+
+// UnaryServerInterceptor calling UnaryServerInterceptor
+// with default interceptor instance
+func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	Init()
+	return instance.UnaryServerInterceptor(ctx, req, info, handler)
+}
+
+// StreamingServerInterceptor calling StreamingServerInterceptor
+// with default interceptor instance
+func StreamingServerInterceptor(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	Init()
+	return instance.StreamingServerInterceptor(srv, stream, info, handler)
+}
+
 type Options func(*Interceptor)
 
 type Interceptor struct {
-	reqIDKey reqIDcontextKey
+	metadataKey string
+	contextKey  ctxkeys.ContextKey
 }
 
-func WithReqIDKey(reqIDKey string) Options {
+// WithMetadataKey set reqIDKey that should be send by client
+// using grpc metadata, provides an option to use this interceptor with
+// requestIDKey metadata other than "x-ktbs-request-id"
+func WithMetadataKey(key string) Options {
 	return func(i *Interceptor) {
-		i.reqIDKey = reqIDcontextKey(reqIDKey)
+		i.metadataKey = key
+	}
+}
+
+// WithContextKey set requestID context value key.
+// provides an option to use this interceptor with
+// context value key other than "X-Ktbs-Request-ID"
+func WithContextKey(key string) Options {
+	return func(i *Interceptor) {
+		i.contextKey = ctxkeys.ContextKey(key)
 	}
 }
 
@@ -38,22 +79,19 @@ func NewInterceptor(opts ...Options) *Interceptor {
 		opt(i)
 	}
 
-	if i.reqIDKey == "" {
-		i.reqIDKey = reqIDcontextKey(ctxkeys.CtxXKtbsRequestID)
+	if i.metadataKey == "" {
+		i.metadataKey = GrpcRequestIDKey
+	}
+
+	if i.contextKey == "" {
+		i.contextKey = ctxkeys.ContextKey(ctxkeys.CtxXKtbsRequestID)
 	}
 
 	return i
 }
 
-// UnaryServerInterceptor get interceptor without creating Interceptor instance
-// TODO: TO BE DEPRECATED
-func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-	interceptor := NewInterceptor()
-	return interceptor.UnaryServerInterceptor(ctx, req, info, handler)
-}
-
 func (i *Interceptor) UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-	reqID, err := getRequestID(ctx, GrpcRequestIDKey)
+	reqID, err := getRequestID(ctx, i.metadataKey)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
@@ -62,7 +100,7 @@ func (i *Interceptor) UnaryServerInterceptor(ctx context.Context, req interface{
 		reqID = uuid.NewV4().String()
 	}
 
-	ctx = context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, reqID)
+	ctx = context.WithValue(ctx, i.contextKey, reqID)
 
 	resp, err = handler(ctx, req)
 
@@ -71,7 +109,7 @@ func (i *Interceptor) UnaryServerInterceptor(ctx context.Context, req interface{
 
 func (i *Interceptor) StreamingServerInterceptor(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 	ctx := stream.Context()
-	reqID, err := getRequestID(ctx, GrpcRequestIDKey)
+	reqID, err := getRequestID(ctx, i.metadataKey)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, err.Error())
 	}
@@ -80,8 +118,8 @@ func (i *Interceptor) StreamingServerInterceptor(srv interface{}, stream grpc.Se
 		reqID = uuid.NewV4().String()
 	}
 
-	ctx = context.WithValue(ctx, i.reqIDKey, reqID)
-	newStream := grpcinterceptor.NewServerStreamWrapper(ctx, stream)
+	ctx = context.WithValue(ctx, i.contextKey, reqID)
+	newStream := wrapper.NewServerStreamWrapper(ctx, stream)
 
 	return handler(srv, newStream)
 }

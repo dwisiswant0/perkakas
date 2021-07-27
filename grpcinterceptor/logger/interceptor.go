@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/kitabisa/perkakas/v2/ctxkeys"
-	"github.com/kitabisa/perkakas/v2/grpcinterceptor"
+	"github.com/kitabisa/perkakas/v2/grpcinterceptor/wrapper"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
@@ -35,7 +35,7 @@ func StreamingServerInterceptor(srv interface{}, stream grpc.ServerStream, info 
 	}
 
 	ctx = context.WithValue(ctx, ctxkeys.CtxLogger, logger)
-	newStream := grpcinterceptor.NewServerStreamWrapper(ctx, stream)
+	newStream := wrapper.NewServerStreamWrapper(ctx, stream)
 
 	return handler(srv, newStream)
 }

@@ -1,4 +1,4 @@
-package grpcinterceptor
+package wrapper
 
 import (
 	"context"
