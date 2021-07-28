@@ -128,6 +128,7 @@ func TestInstanceUnaryInterceptorWithRequestIDAndCustomContextKey(t *testing.T) 
 	interceptor := NewInterceptor(
 		WithRequestIDContextKey("custom-key"),
 	)
+
 	interceptor.UnaryServerInterceptor(ctx, nil, mocks.UnaryInfo, test)
 }
 
@@ -147,7 +148,7 @@ func TestStreamingServerInterceptorWithoutRequestID(t *testing.T) {
 		return nil
 	}
 
-	serverStream := mocks.NewMockServerStream()
+	serverStream := mocks.NewMockServerStream(false)
 	StreamingServerInterceptor(nil, serverStream, mocks.StreamInfo, test)
 }
 
@@ -173,7 +174,7 @@ func TestStreamingServerInterceptorWithRequestID(t *testing.T) {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, reqID)
 
-	serverStream := mocks.NewMockServerStream()
+	serverStream := mocks.NewMockServerStream(false)
 	serverStream.SetContext(ctx)
 
 	StreamingServerInterceptor(nil, serverStream, mocks.StreamInfo, test)
@@ -195,7 +196,7 @@ func TestInstanceStreamingServerInterceptorWithoutRequestID(t *testing.T) {
 		return nil
 	}
 
-	serverStream := mocks.NewMockServerStream()
+	serverStream := mocks.NewMockServerStream(false)
 
 	interceptor := NewInterceptor()
 	interceptor.StreamingServerInterceptor(nil, serverStream, mocks.StreamInfo, test)
@@ -223,7 +224,7 @@ func TestInstanceStreamingServerInterceptorWithRequestID(t *testing.T) {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, reqID)
 
-	serverStream := mocks.NewMockServerStream()
+	serverStream := mocks.NewMockServerStream(false)
 	serverStream.SetContext(ctx)
 
 	interceptor := NewInterceptor()
@@ -254,7 +255,7 @@ func TestInstanceStreamingServerInterceptorWithRequestIDAndCustomContextKey(t *t
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, reqIDContextKey, reqID)
 
-	serverStream := mocks.NewMockServerStream()
+	serverStream := mocks.NewMockServerStream(false)
 	serverStream.SetContext(ctx)
 
 	interceptor := NewInterceptor(

@@ -64,3 +64,7 @@ func main(){
 	grpcServer.Serve(lis)
 }
 ```
+
+### Detail usage
+- For RequestID grpc interceptor please refer to this [link](requestid/README.md)
+- For Logger grpc interceptor please refer to this [link](logger/README.md)

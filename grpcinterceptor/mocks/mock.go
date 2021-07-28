@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 var UnaryInfo = &grpc.UnaryServerInfo{
@@ -20,9 +21,15 @@ type MockServerStream struct {
 	ctx context.Context
 }
 
-func NewMockServerStream() *MockServerStream {
+func NewMockServerStream(withMetada bool) *MockServerStream {
+	ctx := context.Background()
+
+	if withMetada {
+		ctx = metadata.NewIncomingContext(ctx, metadata.MD{})
+	}
+
 	return &MockServerStream{
-		ctx: context.Background(),
+		ctx: ctx,
 	}
 }
 
