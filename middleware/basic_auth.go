@@ -9,7 +9,7 @@ import (
 	"github.com/kitabisa/perkakas/v2/structs"
 )
 
-func BasicAuth(hctx phttp.HttpHandlerContext, definedUsername, definedPassword string) func(next http.Handler) http.Handler {
+func NewBasicAuth(hctx phttp.HttpHandlerContext, definedUsername, definedPassword string) func(next http.Handler) http.Handler {
 	writer := phttp.CustomWriter{
 		C: hctx,
 	}

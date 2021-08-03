@@ -18,8 +18,8 @@ type AuthOption struct {
 	Password string // Basuc Auth password
 }
 
-// Func authenticate supports jwt or basic auth
-func Authenticate(hctx phttp.HttpHandlerContext, authOption AuthOption) func(next http.Handler) http.Handler {
+// Middleware authentication supports jwt or basic auth
+func NewAuthentication(hctx phttp.HttpHandlerContext, authOption AuthOption) func(next http.Handler) http.Handler {
 	jwtt := jwt.NewJWT(authOption.SignKey)
 	definedUsername := authOption.Username
 	definedPassword := authOption.Password
