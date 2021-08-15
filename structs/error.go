@@ -37,6 +37,8 @@ var ErrInvalidHeader *ErrorResponse = &ErrorResponse{
 	HttpStatus: http.StatusBadRequest,
 }
 
+
+
 var ErrInvalidHeaderSignature *ErrorResponse = &ErrorResponse{
 	Response: Response{
 		ResponseCode: "00004",
@@ -54,6 +56,18 @@ var ErrInvalidHeaderTime *ErrorResponse = &ErrorResponse{
 		ResponseDesc: ResponseDesc{
 			ID: "Request sudah kedaluwarsa",
 			EN: "Request already expired",
+		},
+	},
+	HttpStatus: http.StatusBadRequest,
+}
+
+
+var ErrNoAuthToken *ErrorResponse = &ErrorResponse{
+	Response: Response{
+		ResponseCode: "00003",
+		ResponseDesc: ResponseDesc{
+			ID: "Tidak ada JWT Authentication Token",
+			EN: "No Authentication Token",
 		},
 	},
 	HttpStatus: http.StatusBadRequest,

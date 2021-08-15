@@ -28,6 +28,13 @@ func NewJWT(hctx phttp.HttpHandlerContext, signKey []byte) func(next http.Handle
 				return
 			}
 
+			_, ok := r.Context().Value("token").(*jwt.UserClaim)
+			if !ok {
+				log.Error().Msg(structs.ErrNoAuthToken.ResponseDesc.ID)
+				writer.WriteError(w, structs.ErrNoAuthToken)
+				return
+			}
+
 			parentCtx := r.Context()
 			ctx := context.WithValue(parentCtx, "token", claims)
 
