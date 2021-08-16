@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func NewJWT(hctx phttp.HttpHandlerContext, signKey []byte) func(next http.Handler) http.Handler {
+func NewJWT(hctx phttp.HttpHandlerContext, signKey []byte, opts ...error) func(next http.Handler) http.Handler {
 	jwtt := jwt.NewJWT(signKey)
 	writer := phttp.CustomWriter{
 		C: hctx,
@@ -28,11 +28,12 @@ func NewJWT(hctx phttp.HttpHandlerContext, signKey []byte) func(next http.Handle
 				return
 			}
 
-			_, ok := r.Context().Value("token").(*jwt.UserClaim)
-			if !ok {
-				log.Error().Msg(structs.ErrNoAuthToken.ResponseDesc.ID)
-				writer.WriteError(w, structs.ErrNoAuthToken)
-				return
+			for _, opt := range opts {
+				err = opt
+				if err != nil {
+					log.Error().Msg(err.Error())
+					return
+				}
 			}
 
 			parentCtx := r.Context()
@@ -41,6 +42,17 @@ func NewJWT(hctx phttp.HttpHandlerContext, signKey []byte) func(next http.Handle
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
+}
+
+func WithTokenValidation(r http.Request) error {
+	_, ok := r.Context().Value("token").(*jwt.UserClaim)
+	if !ok {
+		//log.Error().Msg(structs.ErrNoAuthToken.ResponseDesc.ID)
+		//writer.WriteError(w, structs.ErrNoAuthToken)
+		return errors.New("errors")
+	}
+
+	return nil
 }
 
 func bearerAuth(r *http.Request, jwtt *jwt.JWT) (*jwt.UserClaim, error) {
