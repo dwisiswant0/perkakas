@@ -3,6 +3,7 @@ package middleware
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -31,6 +32,13 @@ func NewPaseto(hctx phttp.HttpHandlerContext, publicKey string) func(next http.H
 				log.Error().Msg(err.Error())
 				writer.WriteError(w, structs.ErrUnauthorized)
 				return
+			}
+
+			err = token.Validate()
+			if err != nil {
+				tokenValidationErr := fmt.Errorf("paseto token validation: %w", err)
+				log.Error().Msg(tokenValidationErr.Error())
+				writer.WriteError(w, structs.ErrUnauthorized)
 			}
 
 			parentCtx := r.Context()
