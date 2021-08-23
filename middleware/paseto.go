@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"regexp"
 	"strings"
@@ -45,7 +46,7 @@ func decrypt(r *http.Request, pst *paseto.PasetoAsymmetric) (libpaseto.JSONToken
 	authorization := r.Header.Get("Authorization")
 	match, err := regexp.MatchString("^Bearer .+", authorization)
 	if err != nil || !match {
-		return libpaseto.JSONToken{}, "", err
+		return libpaseto.JSONToken{}, "", errors.New("invalid bearer token")
 	}
 
 	tokenString := strings.Split(authorization, " ")
