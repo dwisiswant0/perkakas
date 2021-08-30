@@ -3,7 +3,7 @@ package jwt
 import (
 	"crypto/rsa"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 type JWTRSA struct {
