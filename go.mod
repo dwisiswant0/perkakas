@@ -13,12 +13,12 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
 	github.com/ashwanthkumar/slack-go-webhook v0.0.0-20200209025033-430dd4e66960
 	github.com/checkr/goflagr v0.0.0-20191204001954-97a36973fd24
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/elazarl/goproxy v0.0.0-20200809112317-0581fc3aee2d // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gojektech/heimdall v5.0.2+incompatible
 	github.com/gojektech/valkyrie v0.0.0-20190210220504-8f62c1e7ba45 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/mock v1.3.1
 	github.com/gomodule/redigo v1.8.4
 	github.com/google/uuid v1.1.1
