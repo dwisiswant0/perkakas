@@ -11,3 +11,12 @@ func IsExist(input string, stringArray []string) bool {
 	}
 	return false
 }
+
+func IsExistInt(input int, intArr []int) bool {
+	for _, i := range intArr {
+		if i == input {
+			return true
+		}
+	}
+	return false
+}
