@@ -39,7 +39,10 @@ func NewJWT(hctx phttp.HttpHandlerContext, signKey []byte) func(next http.Handle
 func bearerAuth(r *http.Request, jwtt *jwt.JWT) (*jwt.UserClaim, error) {
 	authorization := r.Header.Get("Authorization")
 	match, err := regexp.MatchString("^Bearer .+", authorization)
-	if err != nil || !match {
+	if !match {
+		return nil, errors.New("invalid jwt token")
+	}
+	if err != nil {
 		return nil, err
 	}
 
