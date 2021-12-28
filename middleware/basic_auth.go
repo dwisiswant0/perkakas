@@ -24,11 +24,13 @@ func NewBasicAuth(hctx phttp.HttpHandlerContext, definedUsername, definedPasswor
 			if err != nil {
 				log.Error().Msg(err.Error())
 				writer.WriteError(w, structs.ErrUnauthorized)
+				return
 			}
 
 			if !ok {
 				log.Error().Msg("Failed login using basic auth")
 				writer.WriteError(w, structs.ErrUnauthorized)
+				return
 			}
 
 			next.ServeHTTP(w, r)
