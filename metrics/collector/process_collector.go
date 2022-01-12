@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-go/statsd"
 	"github.com/prometheus/procfs"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -40,7 +41,7 @@ func (p *ProcessCollector) Collect() {
 
 	if err := p.composer(
 		procfs.NewProc,
-		[]func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error) func(){
+		[]func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error){
 			p.collectVirtualMemory,
 			p.collectProcessDescriptor,
 			p.collectLimit,
@@ -53,7 +54,7 @@ func (p *ProcessCollector) Collect() {
 
 func (p *ProcessCollector) composer(
 	procFn func(pid int) (procfs.Proc, error),
-	collectorFuncs []func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error) func(),
+	collectorFuncs []func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error),
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
 ) func() error {
 	return func() error {
@@ -69,7 +70,7 @@ func (p *ProcessCollector) composer(
 			go func(f func(
 				proc procfs.Proc,
 				gaugeFn func(name string, value float64, tags []string, rate float64) error,
-			) func()) {
+			)) {
 				defer wg.Done()
 				f(proc, gaugeFn)
 			}(fn)
@@ -84,77 +85,81 @@ func (p *ProcessCollector) composer(
 func (p *ProcessCollector) collectVirtualMemory(
 	proc procfs.Proc,
 	gauge func(name string, value float64, tags []string, rate float64) error,
-) func() {
-	return func() {
-		stat, err := proc.Stat()
-		if err != nil {
-			log.Error().Err(err).Msg("proc stat")
-			return
-		}
+) {
+	stat, err := proc.Stat()
+	if err != nil {
+		log.Error().Err(err).Msg("proc stat")
+		return
+	}
 
-		if err = gauge(
-			processVirtualMemory,
-			float64(stat.VirtualMemory()),
-			[]string{},
-			1,
-		); err != nil {
-			log.Error().Err(err).Msg("collect virtial memory")
-		}
+	if err = gauge(
+		processVirtualMemory,
+		float64(stat.VirtualMemory()),
+		[]string{},
+		1,
+	); err != nil {
+		log.Error().Err(err).Msg("collect virtial memory")
+	}
 
-		if err = gauge(
-			residentMemory,
-			float64(stat.ResidentMemory()),
-			[]string{},
-			1,
-		); err != nil {
-			log.Error().Err(err).Msg("collect resident memory")
-		}
+	if err = gauge(
+		residentMemory,
+		float64(stat.ResidentMemory()),
+		[]string{},
+		1,
+	); err != nil {
+		log.Error().Err(err).Msg("collect resident memory")
 	}
 }
 
 func (p *ProcessCollector) collectProcessDescriptor(
 	proc procfs.Proc,
 	gauge func(name string, value float64, tags []string, rate float64) error,
-) func() {
-	return func() {
-		fds, err := proc.FileDescriptorsLen()
-		if err != nil {
-			log.Error().Err(err).Msg("file descriptor len")
-			return
-		}
+) {
+	fds, err := proc.FileDescriptorsLen()
+	if err != nil {
+		log.Error().Err(err).Msg("file descriptor len")
+		return
+	}
 
-		if err = gauge(
-			openFileDescriptor,
-			float64(fds),
-			[]string{},
-			1,
-		); err != nil {
-			log.Error().Err(err).Msg("collect process descriptor")
-		}
+	if err = gauge(
+		openFileDescriptor,
+		float64(fds),
+		[]string{},
+		1,
+	); err != nil {
+		log.Error().Err(err).Msg("collect process descriptor")
 	}
 }
 
 func (p *ProcessCollector) collectLimit(
 	proc procfs.Proc,
 	gauge func(name string, value float64, tags []string, rate float64) error,
-) func() {
-	return func() {
-		limits, err := proc.Limits()
-		if err != nil {
-			log.Error().Err(err).Msg("limits proc")
-			return
-		}
+) {
 
-		if err = gauge(
+	limits, err := proc.Limits()
+	if err != nil {
+		log.Error().Err(err).Msg("limits proc")
+		return
+	}
+
+	g := new(errgroup.Group)
+
+	g.Go(func() error {
+		if err := gauge(
 			maxOpenFileDescriptor,
 			float64(limits.OpenFiles),
 			[]string{},
 			1,
 		); err != nil {
 			log.Error().Err(err).Msg("limit open file")
+			return err
 		}
 
-		if err = gauge(
+		return nil
+	})
+
+	g.Go(func() error {
+		if err := gauge(
 			processVirtualMemoryMaxBytes,
 			float64(limits.AddressSpace),
 			[]string{},
@@ -163,6 +168,11 @@ func (p *ProcessCollector) collectLimit(
 			log.Error().Err(err).Msg("limit max virtual memory")
 		}
 
+		return nil
+	})
+
+	if err := g.Wait(); err != nil {
+		log.Error().Err(err).Msg("collect limit")
 	}
 }
 
