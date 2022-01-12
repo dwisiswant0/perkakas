@@ -7,13 +7,18 @@ This library helps you to send go collector and process collector backed by stat
 
 # How To use
 ```
+st, err := statsd.New(telegrafURL)
+if err != nil {
+	return err
+}
+
 reg := collector.NewRegistry(time.Second)
 
 // register go collector
-reg.Register(collector.NewGoCollector(c))
+reg.Register(collector.NewGoCollector(st))
 
 // register process collector
-reg.Register(collector.NewProcessCollector(c))
+reg.Register(collector.NewProcessCollector(st))
 
 // run it
 go reg.Collect()
