@@ -87,24 +87,25 @@ func (p *processCollector) collectVirtualMemory(
 		stat, err := proc.Stat()
 		if err != nil {
 			log.Error().Err(err).Msg("proc stat")
-		} else {
-			if err := gauge(
-				processVirtualMemory,
-				float64(stat.VirtualMemory()),
-				[]string{},
-				1,
-			); err != nil {
-				log.Error().Err(err).Msg("collect virtial memory")
-			}
+			return
+		}
 
-			if err := gauge(
-				residentMemory,
-				float64(stat.ResidentMemory()),
-				[]string{},
-				1,
-			); err != nil {
-				log.Error().Err(err).Msg("collect resident memory")
-			}
+		if err = gauge(
+			processVirtualMemory,
+			float64(stat.VirtualMemory()),
+			[]string{},
+			1,
+		); err != nil {
+			log.Error().Err(err).Msg("collect virtial memory")
+		}
+
+		if err = gauge(
+			residentMemory,
+			float64(stat.ResidentMemory()),
+			[]string{},
+			1,
+		); err != nil {
+			log.Error().Err(err).Msg("collect resident memory")
 		}
 	}
 }
@@ -117,17 +118,17 @@ func (p *processCollector) collectProcessDescriptor(
 		fds, err := proc.FileDescriptorsLen()
 		if err != nil {
 			log.Error().Err(err).Msg("file descriptor len")
-		} else {
-			if err = gauge(
-				openFileDescriptor,
-				float64(fds),
-				[]string{},
-				1,
-			); err != nil {
-				log.Error().Err(err).Msg("collect process descriptor")
-			}
+			return
 		}
 
+		if err = gauge(
+			openFileDescriptor,
+			float64(fds),
+			[]string{},
+			1,
+		); err != nil {
+			log.Error().Err(err).Msg("collect process descriptor")
+		}
 	}
 }
 
@@ -139,25 +140,27 @@ func (p *processCollector) collectLimit(
 		limits, err := proc.Limits()
 		if err != nil {
 			log.Error().Err(err).Msg("limits proc")
-		} else {
-			if err = gauge(
-				maxOpenFileDescriptor,
-				float64(limits.OpenFiles),
-				[]string{},
-				1,
-			); err != nil {
-				log.Error().Err(err).Msg("limit open file")
-			}
-
-			if err = gauge(
-				processVirtualMemoryMaxBytes,
-				float64(limits.AddressSpace),
-				[]string{},
-				1,
-			); err != nil {
-				log.Error().Err(err).Msg("limit max virtual memory")
-			}
+			return
 		}
+
+		if err = gauge(
+			maxOpenFileDescriptor,
+			float64(limits.OpenFiles),
+			[]string{},
+			1,
+		); err != nil {
+			log.Error().Err(err).Msg("limit open file")
+		}
+
+		if err = gauge(
+			processVirtualMemoryMaxBytes,
+			float64(limits.AddressSpace),
+			[]string{},
+			1,
+		); err != nil {
+			log.Error().Err(err).Msg("limit max virtual memory")
+		}
+
 	}
 }
 
