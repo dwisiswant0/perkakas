@@ -22,7 +22,7 @@ require (
 	github.com/golang/mock v1.3.1
 	github.com/gomodule/redigo v1.8.4
 	github.com/google/uuid v1.1.1
-	github.com/graphql-go/graphql v0.8.0 // indirect
+	github.com/graphql-go/graphql v0.8.0
 	github.com/im7mortal/kmutex v1.0.0
 	github.com/influxdata/influxdb1-client v0.0.0-20190809212627-fc22c7df067e
 	github.com/minio/minio-go/v6 v6.0.45
@@ -31,9 +31,10 @@ require (
 	github.com/opentracing/opentracing-go v1.1.0
 	github.com/parnurzeal/gorequest v0.2.16 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus/procfs v0.0.2
 	github.com/rs/zerolog v1.19.0
 	github.com/satori/go.uuid v1.2.0
-	github.com/serenize/snaker v0.0.0-20201027110005-a7ad2135616e // indirect
+	github.com/serenize/snaker v0.0.0-20201027110005-a7ad2135616e
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.6.1
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
