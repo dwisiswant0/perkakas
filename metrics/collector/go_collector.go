@@ -35,7 +35,7 @@ const (
 	countAggregate metricAggregate = "count"
 )
 
-type goCollector struct {
+type GoCollector struct {
 	sync.Mutex
 	st                 *statsd.Client
 	readMem            func(*runtime.MemStats)
@@ -46,8 +46,8 @@ type goCollector struct {
 	memStatsCollection map[string]memStatsCollection
 }
 
-func NewGoCollector(st *statsd.Client) *goCollector {
-	return &goCollector{
+func NewGoCollector(st *statsd.Client) *GoCollector {
+	return &GoCollector{
 		st:         st,
 		readMem:    runtime.ReadMemStats,
 		memMaxWait: time.Second,
@@ -123,7 +123,7 @@ func NewGoCollector(st *statsd.Client) *goCollector {
 	}
 }
 
-func (g *goCollector) Collect() {
+func (g *GoCollector) Collect() {
 	if g.st == nil {
 		return
 	}
@@ -136,11 +136,11 @@ func (g *goCollector) Collect() {
 	})()
 }
 
-func (g *goCollector) Name() string {
+func (g *GoCollector) Name() string {
 	return "go_collector"
 }
 
-func (g *goCollector) composer(collectorFuncs []func()) func() {
+func (g *GoCollector) composer(collectorFuncs []func()) func() {
 	return func() {
 		var wg sync.WaitGroup
 		wg.Add(len(collectorFuncs))
@@ -156,7 +156,7 @@ func (g *goCollector) composer(collectorFuncs []func()) func() {
 	}
 }
 
-func (g *goCollector) collectNumOfGoroutine(
+func (g *GoCollector) collectNumOfGoroutine(
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
 	_ func(name string, value int64, tags []string, rate float64) error,
 ) func() {
@@ -167,7 +167,7 @@ func (g *goCollector) collectNumOfGoroutine(
 	}
 }
 
-func (g *goCollector) collectGC(
+func (g *GoCollector) collectGC(
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
 	_ func(name string, value int64, tags []string, rate float64) error,
 ) func() {
@@ -180,7 +180,7 @@ func (g *goCollector) collectGC(
 	}
 }
 
-func (g *goCollector) collectThread(
+func (g *GoCollector) collectThread(
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
 	_ func(name string, value int64, tags []string, rate float64) error,
 ) func() {
@@ -192,7 +192,7 @@ func (g *goCollector) collectThread(
 	}
 }
 
-func (g *goCollector) collectMemory(
+func (g *GoCollector) collectMemory(
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
 	countFn func(name string, value int64, tags []string, rate float64) error,
 ) func() {
@@ -233,7 +233,7 @@ func (g *goCollector) collectMemory(
 	}
 }
 
-func (g *goCollector) deletegateMemCollector(
+func (g *GoCollector) deletegateMemCollector(
 	memstats *runtime.MemStats,
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
 	countFn func(name string, value int64, tags []string, rate float64) error,

@@ -13,7 +13,7 @@ func TestProcessCollectorComposer(t *testing.T) {
 		t.Skip()
 	}
 
-	p := &processCollector{
+	p := &ProcessCollector{
 		pid: os.Getpid(),
 	}
 

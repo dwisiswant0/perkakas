@@ -17,23 +17,23 @@ const (
 	residentMemory               = "process.resident_memory"
 )
 
-type processCollector struct {
+type ProcessCollector struct {
 	pid int
 	st  *statsd.Client
 }
 
-func NewProcessCollector(st *statsd.Client) *processCollector {
-	return &processCollector{
+func NewProcessCollector(st *statsd.Client) *ProcessCollector {
+	return &ProcessCollector{
 		pid: os.Getpid(),
 		st:  st,
 	}
 }
 
-func (p *processCollector) Name() string {
+func (p *ProcessCollector) Name() string {
 	return "process_collector"
 }
 
-func (p *processCollector) Collect() {
+func (p *ProcessCollector) Collect() {
 	if p.pid == 0 || !canCollectProcess() || p.st == nil {
 		return
 	}
@@ -51,7 +51,7 @@ func (p *processCollector) Collect() {
 	}
 }
 
-func (p *processCollector) composer(
+func (p *ProcessCollector) composer(
 	procFn func(pid int) (procfs.Proc, error),
 	collectorFuncs []func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error) func(),
 	gaugeFn func(name string, value float64, tags []string, rate float64) error,
@@ -81,7 +81,7 @@ func (p *processCollector) composer(
 	}
 }
 
-func (p *processCollector) collectVirtualMemory(
+func (p *ProcessCollector) collectVirtualMemory(
 	proc procfs.Proc,
 	gauge func(name string, value float64, tags []string, rate float64) error,
 ) func() {
@@ -112,7 +112,7 @@ func (p *processCollector) collectVirtualMemory(
 	}
 }
 
-func (p *processCollector) collectProcessDescriptor(
+func (p *ProcessCollector) collectProcessDescriptor(
 	proc procfs.Proc,
 	gauge func(name string, value float64, tags []string, rate float64) error,
 ) func() {
@@ -134,7 +134,7 @@ func (p *processCollector) collectProcessDescriptor(
 	}
 }
 
-func (p *processCollector) collectLimit(
+func (p *ProcessCollector) collectLimit(
 	proc procfs.Proc,
 	gauge func(name string, value float64, tags []string, rate float64) error,
 ) func() {

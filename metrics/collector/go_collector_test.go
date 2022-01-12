@@ -2,7 +2,7 @@ package collector
 
 import "testing"
 
-func TestGoCollector(t *testing.T) {
+func TestGoCollectorComposer(t *testing.T) {
 	g := NewGoCollector(nil)
 	gaugeFn := func(name string, value float64, tags []string, rate float64) error {
 		return nil
