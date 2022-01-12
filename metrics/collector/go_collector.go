@@ -142,17 +142,9 @@ func (g *GoCollector) Name() string {
 
 func (g *GoCollector) composer(collectorFuncs []func()) func() {
 	return func() {
-		var wg sync.WaitGroup
-		wg.Add(len(collectorFuncs))
-
 		for _, cFn := range collectorFuncs {
-			go func(fn func()) {
-				defer wg.Done()
-				fn()
-			}(cFn)
+			cFn()
 		}
-
-		wg.Wait()
 	}
 }
 

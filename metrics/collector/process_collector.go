@@ -2,12 +2,10 @@ package collector
 
 import (
 	"os"
-	"sync"
 
 	"github.com/DataDog/datadog-go/statsd"
 	"github.com/prometheus/procfs"
 	"github.com/rs/zerolog/log"
-	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -64,19 +62,9 @@ func (p *ProcessCollector) composer(
 			return err
 		}
 
-		var wg sync.WaitGroup
-		wg.Add(len(collectorFuncs))
 		for _, fn := range collectorFuncs {
-			go func(f func(
-				proc procfs.Proc,
-				gaugeFn func(name string, value float64, tags []string, rate float64) error,
-			)) {
-				defer wg.Done()
-				f(proc, gaugeFn)
-			}(fn)
+			fn(proc, gaugeFn)
 		}
-
-		wg.Wait()
 
 		return nil
 	}
@@ -98,7 +86,7 @@ func (p *ProcessCollector) collectVirtualMemory(
 		[]string{},
 		1,
 	); err != nil {
-		log.Error().Err(err).Msg("collect virtial memory")
+		log.Error().Err(err).Msg("collect virtual memory")
 	}
 
 	if err = gauge(
@@ -142,37 +130,23 @@ func (p *ProcessCollector) collectLimit(
 		return
 	}
 
-	g := new(errgroup.Group)
+	if err := gauge(
+		maxOpenFileDescriptor,
+		float64(limits.OpenFiles),
+		[]string{},
+		1,
+	); err != nil {
+		log.Error().Err(err).Msg("limit open file")
 
-	g.Go(func() error {
-		if err := gauge(
-			maxOpenFileDescriptor,
-			float64(limits.OpenFiles),
-			[]string{},
-			1,
-		); err != nil {
-			log.Error().Err(err).Msg("limit open file")
-			return err
-		}
+	}
 
-		return nil
-	})
-
-	g.Go(func() error {
-		if err := gauge(
-			processVirtualMemoryMaxBytes,
-			float64(limits.AddressSpace),
-			[]string{},
-			1,
-		); err != nil {
-			log.Error().Err(err).Msg("limit max virtual memory")
-		}
-
-		return nil
-	})
-
-	if err := g.Wait(); err != nil {
-		log.Error().Err(err).Msg("collect limit")
+	if err := gauge(
+		processVirtualMemoryMaxBytes,
+		float64(limits.AddressSpace),
+		[]string{},
+		1,
+	); err != nil {
+		log.Error().Err(err).Msg("limit max virtual memory")
 	}
 }
 
