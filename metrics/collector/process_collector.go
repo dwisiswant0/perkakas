@@ -38,7 +38,7 @@ func (p *processCollector) Collect() {
 		return
 	}
 
-	p.composer(
+	if err := p.composer(
 		procfs.NewProc,
 		[]func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error) func(){
 			p.collectVirtualMemory,
@@ -46,7 +46,9 @@ func (p *processCollector) Collect() {
 			p.collectLimit,
 		},
 		p.st.Gauge,
-	)()
+	)(); err != nil {
+		log.Error().Err(err).Msg("process collector composer")
+	}
 }
 
 func (p *processCollector) composer(

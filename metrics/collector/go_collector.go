@@ -133,25 +133,27 @@ func (g *goCollector) Collect() {
 		g.collectGC(g.st.Gauge, g.st.Count),
 		g.collectThread(g.st.Gauge, g.st.Count),
 		g.collectMemory(g.st.Gauge, g.st.Count),
-	})
+	})()
 }
 
 func (g *goCollector) Name() string {
 	return "go_collector"
 }
 
-func (g *goCollector) composer(collectorFuncs []func()) {
-	var wg sync.WaitGroup
-	wg.Add(len(collectorFuncs))
+func (g *goCollector) composer(collectorFuncs []func()) func() {
+	return func() {
+		var wg sync.WaitGroup
+		wg.Add(len(collectorFuncs))
 
-	for _, cFn := range collectorFuncs {
-		go func(fn func()) {
-			defer wg.Done()
-			fn()
-		}(cFn)
+		for _, cFn := range collectorFuncs {
+			go func(fn func()) {
+				defer wg.Done()
+				fn()
+			}(cFn)
+		}
+
+		wg.Wait()
 	}
-
-	wg.Wait()
 }
 
 func (g *goCollector) collectNumOfGoroutine(
