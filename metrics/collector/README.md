@@ -12,6 +12,9 @@ if err != nil {
 	return err
 }
 
+// set namespace in each service
+st.Namespace = fmt.Sprintf("%s_", "service_namespace")
+
 reg := collector.NewRegistry(time.Second)
 
 // register go collector
