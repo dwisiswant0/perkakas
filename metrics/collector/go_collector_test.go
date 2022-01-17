@@ -13,9 +13,9 @@ func TestGoCollectorComposer(t *testing.T) {
 	}
 
 	g.composer([]func(){
-		g.collectNumOfGoroutine(gaugeFn, countFn),
-		g.collectGC(gaugeFn, countFn),
-		g.collectThread(gaugeFn, countFn),
+		g.collectNumOfGoroutine(gaugeFn),
+		g.collectGC(gaugeFn),
+		g.collectThread(gaugeFn),
 		g.collectMemory(gaugeFn, countFn),
 	})()
 }

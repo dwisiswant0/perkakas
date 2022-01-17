@@ -129,9 +129,9 @@ func (g *GoCollector) Collect() {
 	}
 
 	g.composer([]func(){
-		g.collectNumOfGoroutine(g.st.Gauge, g.st.Count),
-		g.collectGC(g.st.Gauge, g.st.Count),
-		g.collectThread(g.st.Gauge, g.st.Count),
+		g.collectNumOfGoroutine(g.st.Gauge),
+		g.collectGC(g.st.Gauge),
+		g.collectThread(g.st.Gauge),
 		g.collectMemory(g.st.Gauge, g.st.Count),
 	})()
 }
@@ -148,7 +148,7 @@ func (g *GoCollector) composer(collectorFuncs []func()) func() {
 	}
 }
 
-func (g *GoCollector) collectNumOfGoroutine(gaugeFn gaugeFunc, _ countFunc) func() {
+func (g *GoCollector) collectNumOfGoroutine(gaugeFn gaugeFunc) func() {
 	return func() {
 		if err := gaugeFn(goroutineStats, float64(runtime.NumGoroutine()), []string{}, 1); err != nil {
 			log.Error().Err(err).Msg("collect number of goroutine")
@@ -156,7 +156,7 @@ func (g *GoCollector) collectNumOfGoroutine(gaugeFn gaugeFunc, _ countFunc) func
 	}
 }
 
-func (g *GoCollector) collectGC(gaugeFn gaugeFunc, _ countFunc) func() {
+func (g *GoCollector) collectGC(gaugeFn gaugeFunc) func() {
 	return func() {
 		var stats debug.GCStats
 		debug.ReadGCStats(&stats)
@@ -166,7 +166,7 @@ func (g *GoCollector) collectGC(gaugeFn gaugeFunc, _ countFunc) func() {
 	}
 }
 
-func (g *GoCollector) collectThread(gaugeFn gaugeFunc, _ countFunc) func() {
+func (g *GoCollector) collectThread(gaugeFn gaugeFunc) func() {
 	return func() {
 		n, _ := runtime.ThreadCreateProfile(nil)
 		if err := gaugeFn(threadCreationStats, float64(n), []string{}, 1); err != nil {
