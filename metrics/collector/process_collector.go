@@ -39,7 +39,7 @@ func (p *ProcessCollector) Collect() {
 
 	if err := p.composer(
 		procfs.NewProc,
-		[]func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error){
+		[]func(procfs.Proc, gaugeFunc){
 			p.collectVirtualMemory,
 			p.collectProcessDescriptor,
 			p.collectLimit,
@@ -52,8 +52,8 @@ func (p *ProcessCollector) Collect() {
 
 func (p *ProcessCollector) composer(
 	procFn func(pid int) (procfs.Proc, error),
-	collectorFuncs []func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error),
-	gaugeFn func(name string, value float64, tags []string, rate float64) error,
+	collectorFuncs []func(procfs.Proc, gaugeFunc),
+	gaugeFn gaugeFunc,
 ) func() error {
 	return func() error {
 		proc, err := procFn(p.pid)
@@ -70,10 +70,7 @@ func (p *ProcessCollector) composer(
 	}
 }
 
-func (p *ProcessCollector) collectVirtualMemory(
-	proc procfs.Proc,
-	gauge func(name string, value float64, tags []string, rate float64) error,
-) {
+func (p *ProcessCollector) collectVirtualMemory(proc procfs.Proc, gauge gaugeFunc) {
 	stat, err := proc.Stat()
 	if err != nil {
 		log.Error().Err(err).Msg("proc stat")
@@ -99,10 +96,7 @@ func (p *ProcessCollector) collectVirtualMemory(
 	}
 }
 
-func (p *ProcessCollector) collectProcessDescriptor(
-	proc procfs.Proc,
-	gauge func(name string, value float64, tags []string, rate float64) error,
-) {
+func (p *ProcessCollector) collectProcessDescriptor(proc procfs.Proc, gauge gaugeFunc) {
 	fds, err := proc.FileDescriptorsLen()
 	if err != nil {
 		log.Error().Err(err).Msg("file descriptor len")
@@ -119,11 +113,7 @@ func (p *ProcessCollector) collectProcessDescriptor(
 	}
 }
 
-func (p *ProcessCollector) collectLimit(
-	proc procfs.Proc,
-	gauge func(name string, value float64, tags []string, rate float64) error,
-) {
-
+func (p *ProcessCollector) collectLimit(proc procfs.Proc, gauge gaugeFunc) {
 	limits, err := proc.Limits()
 	if err != nil {
 		log.Error().Err(err).Msg("limits proc")

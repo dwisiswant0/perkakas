@@ -17,5 +17,5 @@ func TestGoCollectorComposer(t *testing.T) {
 		g.collectGC(gaugeFn, countFn),
 		g.collectThread(gaugeFn, countFn),
 		g.collectMemory(gaugeFn, countFn),
-	})
+	})()
 }

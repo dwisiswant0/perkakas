@@ -19,7 +19,7 @@ func TestProcessCollectorComposer(t *testing.T) {
 
 	p.composer(
 		procfs.NewProc,
-		[]func(procfs.Proc, func(name string, value float64, tags []string, rate float64) error){
+		[]func(procfs.Proc, gaugeFunc){
 			p.collectVirtualMemory,
 			p.collectProcessDescriptor,
 			p.collectLimit,

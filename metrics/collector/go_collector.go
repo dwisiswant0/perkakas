@@ -148,10 +148,7 @@ func (g *GoCollector) composer(collectorFuncs []func()) func() {
 	}
 }
 
-func (g *GoCollector) collectNumOfGoroutine(
-	gaugeFn func(name string, value float64, tags []string, rate float64) error,
-	_ func(name string, value int64, tags []string, rate float64) error,
-) func() {
+func (g *GoCollector) collectNumOfGoroutine(gaugeFn gaugeFunc, _ countFunc) func() {
 	return func() {
 		if err := gaugeFn(goroutineStats, float64(runtime.NumGoroutine()), []string{}, 1); err != nil {
 			log.Error().Err(err).Msg("collect number of goroutine")
@@ -159,10 +156,7 @@ func (g *GoCollector) collectNumOfGoroutine(
 	}
 }
 
-func (g *GoCollector) collectGC(
-	gaugeFn func(name string, value float64, tags []string, rate float64) error,
-	_ func(name string, value int64, tags []string, rate float64) error,
-) func() {
+func (g *GoCollector) collectGC(gaugeFn gaugeFunc, _ countFunc) func() {
 	return func() {
 		var stats debug.GCStats
 		debug.ReadGCStats(&stats)
@@ -172,10 +166,7 @@ func (g *GoCollector) collectGC(
 	}
 }
 
-func (g *GoCollector) collectThread(
-	gaugeFn func(name string, value float64, tags []string, rate float64) error,
-	_ func(name string, value int64, tags []string, rate float64) error,
-) func() {
+func (g *GoCollector) collectThread(gaugeFn gaugeFunc, _ countFunc) func() {
 	return func() {
 		n, _ := runtime.ThreadCreateProfile(nil)
 		if err := gaugeFn(threadCreationStats, float64(n), []string{}, 1); err != nil {
@@ -184,10 +175,7 @@ func (g *GoCollector) collectThread(
 	}
 }
 
-func (g *GoCollector) collectMemory(
-	gaugeFn func(name string, value float64, tags []string, rate float64) error,
-	countFn func(name string, value int64, tags []string, rate float64) error,
-) func() {
+func (g *GoCollector) collectMemory(gaugeFn gaugeFunc, countFn countFunc) func() {
 	return func() {
 		var (
 			ms   = runtime.MemStats{}
@@ -225,11 +213,7 @@ func (g *GoCollector) collectMemory(
 	}
 }
 
-func (g *GoCollector) deletegateMemCollector(
-	memstats *runtime.MemStats,
-	gaugeFn func(name string, value float64, tags []string, rate float64) error,
-	countFn func(name string, value int64, tags []string, rate float64) error,
-) {
+func (g *GoCollector) deletegateMemCollector(memstats *runtime.MemStats, gaugeFn gaugeFunc, countFn countFunc) {
 	for k, v := range g.memStatsCollection {
 		if v.aggregateType == gaugeAggregate {
 			if err := gaugeFn(k, v.get(memstats), []string{}, 1); err != nil {
