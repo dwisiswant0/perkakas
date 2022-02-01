@@ -1,9 +1,9 @@
-module github.com/kitabisa/perkakas/v3/perkakas-grpc
+module github.com/kitabisa/perkakas/perkakas-grpc
 
 go 1.17
 
 require (
-	github.com/kitabisa/perkakas/v3/random v0.0.0-20220201045913-7b1c4d25565c
+	github.com/kitabisa/perkakas/random v0.0.0-20220201045913-7b1c4d25565c
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.0
 	google.golang.org/grpc v1.44.0

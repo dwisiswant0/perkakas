@@ -7,7 +7,7 @@ Please refer to instructions below for datails usage
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 
@@ -41,7 +41,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 
@@ -81,7 +81,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 
@@ -121,7 +121,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 
@@ -155,7 +155,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 
@@ -195,7 +195,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 
@@ -235,7 +235,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/requestid"
+    "github.com/kitabisa/perkakas/grpcinterceptor/requestid"
     ...
 )
 

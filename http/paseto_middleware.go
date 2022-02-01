@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/kitabisa/perkakas/v3/http/token/paseto"
+	"github.com/kitabisa/perkakas/http/token/paseto"
 	"log"
 	"net/http"
 	"regexp"

@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/log
+module github.com/kitabisa/perkakas/log
 
 go 1.17
 

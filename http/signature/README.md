@@ -7,7 +7,7 @@ This module will help you creata HMAC signature based on sha256 & secret key.
 ```go
 package main
 
-import "github.com/kitabisa/perkakas/v3/signature"
+import "github.com/kitabisa/perkakas/signature"
 
 func main() {
     message := "this is my message"

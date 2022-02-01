@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/Shopify/sarama"
-	"github.com/kitabisa/perkakas/v3/perkakas-broker/kafka"
+	"github.com/kitabisa/perkakas/perkakas-broker/kafka"
 )
 
 // ISseClient defines interface of SSE client

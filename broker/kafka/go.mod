@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/perkakas-broker/kafka
+module github.com/kitabisa/perkakas/perkakas-broker/kafka
 
 go 1.17
 

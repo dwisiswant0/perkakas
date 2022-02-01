@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/featureflag
+module github.com/kitabisa/perkakas/featureflag
 
 go 1.17
 

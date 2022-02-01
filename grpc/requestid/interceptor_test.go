@@ -2,11 +2,11 @@ package requestid
 
 import (
 	"context"
-	"github.com/kitabisa/perkakas/v3/perkakas-grpc/mocks"
+	"github.com/kitabisa/perkakas/perkakas-grpc/mocks"
 	"testing"
 
-	"github.com/kitabisa/perkakas/v3/perkakas-grpc/ctxkeys"
-	uuid "github.com/kitabisa/perkakas/v3/random"
+	"github.com/kitabisa/perkakas/perkakas-grpc/ctxkeys"
+	uuid "github.com/kitabisa/perkakas/random"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"

@@ -13,7 +13,7 @@ How to develop on perkakas:
 ## Installation
 
 ```bash
-$ go get github.com/kitabisa/perkakas/v3/v2
+$ go get github.com/kitabisa/perkakas/v2
 ```
 
 ## How To Use

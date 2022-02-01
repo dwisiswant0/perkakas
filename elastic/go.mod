@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/elastic
+module github.com/kitabisa/perkakas/elastic
 
 go 1.17
 

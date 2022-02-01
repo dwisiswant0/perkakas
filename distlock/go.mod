@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/distlock
+module github.com/kitabisa/perkakas/distlock
 
 go 1.17
 

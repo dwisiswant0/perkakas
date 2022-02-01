@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/random
+module github.com/kitabisa/perkakas/random
 
 go 1.17
 

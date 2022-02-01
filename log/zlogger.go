@@ -2,7 +2,7 @@ package log
 
 import (
 	"context"
-	"github.com/kitabisa/perkakas/v3/perkakas-log/ctxkeys"
+	"github.com/kitabisa/perkakas/perkakas-log/ctxkeys"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

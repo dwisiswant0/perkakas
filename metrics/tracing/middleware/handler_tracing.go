@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	cmiddleware "github.com/go-chi/chi/middleware"
-	plog "github.com/kitabisa/perkakas/v3/log"
+	plog "github.com/kitabisa/perkakas/log"
 	otLog "github.com/opentracing/opentracing-go/log"
 	zlog "github.com/rs/zerolog/log"
 )

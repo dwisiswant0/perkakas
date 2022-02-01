@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/graphql
+module github.com/kitabisa/perkakas/graphql
 
 go 1.17
 

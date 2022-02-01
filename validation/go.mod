@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/validation
+module github.com/kitabisa/perkakas/validation
 
 go 1.17
 

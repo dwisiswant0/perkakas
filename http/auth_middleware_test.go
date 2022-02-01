@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kitabisa/perkakas/v3/token/jwt"
+	"github.com/kitabisa/perkakas/token/jwt"
 	"github.com/stretchr/testify/assert"
 )
 

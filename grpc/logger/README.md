@@ -7,7 +7,7 @@ Please refer to instructions below for datails usage
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/logger"
+    "github.com/kitabisa/perkakas/grpcinterceptor/logger"
     ...
 )
 
@@ -41,7 +41,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/logger"
+    "github.com/kitabisa/perkakas/grpcinterceptor/logger"
     ...
 )
 
@@ -81,7 +81,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/logger"
+    "github.com/kitabisa/perkakas/grpcinterceptor/logger"
     ...
 )
 
@@ -115,7 +115,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/logger"
+    "github.com/kitabisa/perkakas/grpcinterceptor/logger"
     ...
 )
 
@@ -155,7 +155,7 @@ func main(){
 ```go
 import(
     ...
-    "github.com/kitabisa/perkakas/v3/grpcinterceptor/logger"
+    "github.com/kitabisa/perkakas/grpcinterceptor/logger"
     ...
 )
 

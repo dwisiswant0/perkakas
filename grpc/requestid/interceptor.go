@@ -3,11 +3,11 @@ package requestid
 import (
 	"context"
 	"errors"
-	"github.com/kitabisa/perkakas/v3/perkakas-grpc/wrapper"
+	"github.com/kitabisa/perkakas/perkakas-grpc/wrapper"
 	"sync"
 
-	"github.com/kitabisa/perkakas/v3/perkakas-grpc/ctxkeys"
-	uuid "github.com/kitabisa/perkakas/v3/random"
+	"github.com/kitabisa/perkakas/perkakas-grpc/ctxkeys"
+	uuid "github.com/kitabisa/perkakas/random"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"

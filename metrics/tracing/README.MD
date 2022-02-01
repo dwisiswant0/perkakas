@@ -20,7 +20,7 @@ r.Use(handlerTracing)
 
 ![](https://user-images.githubusercontent.com/9508513/101141474-ed31b300-3646-11eb-937a-561cf12c1c17.png)
 
-Plase read [middleware readme.md](https://github.com/kitabisa/perkakas/v3/blob/master/tracing/middleware/README.md) to know more about handler tracing middleware usage example.
+Plase read [middleware readme.md](https://github.com/kitabisa/perkakas/blob/master/tracing/middleware/README.md) to know more about handler tracing middleware usage example.
 
 ## Wraping go-redis
 

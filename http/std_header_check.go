@@ -2,7 +2,7 @@ package http
 
 import (
 	"fmt"
-	"github.com/kitabisa/perkakas/v3/http/signature"
+	"github.com/kitabisa/perkakas/http/signature"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"

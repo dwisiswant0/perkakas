@@ -47,8 +47,8 @@ github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
-github.com/kitabisa/perkakas/v3/random v0.0.0-20220201045913-7b1c4d25565c h1:Ql2hF7juR2M/zIDa1mefjynKxpXkAGXvsFIurH3APHM=
-github.com/kitabisa/perkakas/v3/random v0.0.0-20220201045913-7b1c4d25565c/go.mod h1:b0l88mUJI4Cv+simG7OeRgzLOYAhQPYcMZe/zpQ1r2U=
+github.com/kitabisa/perkakas/random v0.0.0-20220201045913-7b1c4d25565c h1:Ql2hF7juR2M/zIDa1mefjynKxpXkAGXvsFIurH3APHM=
+github.com/kitabisa/perkakas/random v0.0.0-20220201045913-7b1c4d25565c/go.mod h1:b0l88mUJI4Cv+simG7OeRgzLOYAhQPYcMZe/zpQ1r2U=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

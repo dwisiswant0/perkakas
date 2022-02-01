@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/metrics/telegraf
+module github.com/kitabisa/perkakas/metrics/telegraf
 
 go 1.17
 

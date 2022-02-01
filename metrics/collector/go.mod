@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/metrics/collector
+module github.com/kitabisa/perkakas/metrics/collector
 
 go 1.17
 

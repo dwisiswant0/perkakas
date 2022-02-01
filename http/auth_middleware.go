@@ -2,7 +2,7 @@ package http
 
 import (
 	"context"
-	"github.com/kitabisa/perkakas/v3/http/token/jwt"
+	"github.com/kitabisa/perkakas/http/token/jwt"
 	"log"
 	"net/http"
 	"reflect"

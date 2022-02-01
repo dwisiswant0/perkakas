@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/slack
+module github.com/kitabisa/perkakas/slack
 
 go 1.17
 

@@ -2,10 +2,10 @@ package logger
 
 import (
 	"context"
-	"github.com/kitabisa/perkakas/v3/perkakas-grpc/wrapper"
+	"github.com/kitabisa/perkakas/perkakas-grpc/wrapper"
 	"sync"
 
-	"github.com/kitabisa/perkakas/v3/perkakas-grpc/ctxkeys"
+	"github.com/kitabisa/perkakas/perkakas-grpc/ctxkeys"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )

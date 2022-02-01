@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/file
+module github.com/kitabisa/perkakas/file
 
 go 1.17
 

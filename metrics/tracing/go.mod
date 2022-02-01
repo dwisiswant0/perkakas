@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/metrics/tracing
+module github.com/kitabisa/perkakas/metrics/tracing
 
 go 1.17
 
@@ -20,7 +20,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.2.1 // indirect
 	github.com/go-logr/stdr v1.2.0 // indirect
-	github.com/kitabisa/perkakas/v3/perkakas-log v0.0.0-20220201042918-6fd26087e106 // indirect
+	github.com/kitabisa/perkakas/perkakas-log v0.0.0-20220201042918-6fd26087e106 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.18.1 // indirect

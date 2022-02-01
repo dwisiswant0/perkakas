@@ -3,7 +3,7 @@ package signature_test
 import (
 	"testing"
 
-	"github.com/kitabisa/perkakas/v3/signature"
+	"github.com/kitabisa/perkakas/signature"
 	"github.com/stretchr/testify/assert"
 )
 

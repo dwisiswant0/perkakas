@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"errors"
-	"github.com/kitabisa/perkakas/v3/http/token/jwt"
+	"github.com/kitabisa/perkakas/http/token/jwt"
 	"log"
 	"net/http"
 	"regexp"

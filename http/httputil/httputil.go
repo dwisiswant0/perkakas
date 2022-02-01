@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/kitabisa/perkakas/v3/random"
+	"github.com/kitabisa/perkakas/random"
 )
 
 const passwordPattern = `(\\{0,1}"password\\{0,1}"):\s*\\{0,1}"(.*?)\\{0,1}"`

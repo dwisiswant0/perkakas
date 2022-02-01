@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/fcm
+module github.com/kitabisa/perkakas/fcm
 
 go 1.17
 

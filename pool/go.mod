@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/v3/pool
+module github.com/kitabisa/perkakas/pool
 
 go 1.17
 

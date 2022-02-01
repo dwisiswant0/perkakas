@@ -116,10 +116,12 @@ github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfV
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
-github.com/kitabisa/perkakas/v3/random v0.0.0-20220201063830-76cb5e2377d3 h1:DOvY5wedaH1QY9d9UhQ9Ricpz5UFaNlKmsMGyIHOxXw=
-github.com/kitabisa/perkakas/v3/random v0.0.0-20220201063830-76cb5e2377d3/go.mod h1:b0l88mUJI4Cv+simG7OeRgzLOYAhQPYcMZe/zpQ1r2U=
-github.com/kitabisa/perkakas/v3/v2 v2.32.0 h1:+fQqcl5FyemA0l5uLNvYWYUcq/kwnBJD7MS4LqttwMY=
-github.com/kitabisa/perkakas/v3/v2 v2.32.0/go.mod h1:+ZtqWgcwJ1vkdqM7p2ZBi3xjzYU+19rYC1o8Rqotd90=
+github.com/kitabisa/perkakas v3.0.0+incompatible h1:s75F1VAGtXoB3A8WUDeR7S0r5PknWPIAGKArbPk8g3A=
+github.com/kitabisa/perkakas v3.0.0+incompatible/go.mod h1:nP8Rw34U+avxBtTxcBUewqv8Lpu88qc8SycxADQV81Y=
+github.com/kitabisa/perkakas/random v0.0.0-20220201063830-76cb5e2377d3 h1:DOvY5wedaH1QY9d9UhQ9Ricpz5UFaNlKmsMGyIHOxXw=
+github.com/kitabisa/perkakas/random v0.0.0-20220201063830-76cb5e2377d3/go.mod h1:b0l88mUJI4Cv+simG7OeRgzLOYAhQPYcMZe/zpQ1r2U=
+github.com/kitabisa/perkakas/v2 v2.32.0 h1:+fQqcl5FyemA0l5uLNvYWYUcq/kwnBJD7MS4LqttwMY=
+github.com/kitabisa/perkakas/v2 v2.32.0/go.mod h1:+ZtqWgcwJ1vkdqM7p2ZBi3xjzYU+19rYC1o8Rqotd90=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
