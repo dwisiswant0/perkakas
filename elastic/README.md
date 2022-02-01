@@ -10,7 +10,7 @@ You can just embed the client and create wrapper function like this:
 package myesclient
 
 import ( 
-    "github.com/kitabisa/perkakas/elastic"
+    "github.com/kitabisa/perkakas/v3/elastic"
     es "github.com/olivere/elastic/v7"
     "context"
     "fmt"

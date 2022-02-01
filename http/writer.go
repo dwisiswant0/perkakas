@@ -2,25 +2,23 @@ package http
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"reflect"
-
-	"github.com/kitabisa/perkakas/v2/structs"
 )
 
 type HttpHandlerContext struct {
-	M structs.Meta
-	E map[error]*structs.ErrorResponse
+	M Meta
+	E map[string]*ErrorResponse
 }
 
-func NewContextHandler(meta structs.Meta) HttpHandlerContext {
-	var errMap map[error]*structs.ErrorResponse = map[error]*structs.ErrorResponse{
+//NewContextHandler add base error response
+func NewContextHandler(meta Meta) HttpHandlerContext {
+	var errMap = map[string]*ErrorResponse{
 		// register general error here, so if there are new general error you must add it here
-		structs.ErrInvalidHeader:          structs.ErrInvalidHeader,
-		structs.ErrUnauthorized:           structs.ErrUnauthorized,
-		structs.ErrInvalidHeaderSignature: structs.ErrInvalidHeaderSignature,
-		structs.ErrInvalidHeaderTime:      structs.ErrInvalidHeaderTime,
+		ErrInvalidHeader.ErrorType.Error():          ErrInvalidHeader,
+		ErrUnauthorized.ErrorType.Error():           ErrUnauthorized,
+		ErrInvalidHeaderSignature.ErrorType.Error(): ErrInvalidHeaderSignature,
+		ErrInvalidHeaderTime.ErrorType.Error():      ErrInvalidHeaderTime,
 	}
 
 	return HttpHandlerContext{
@@ -29,13 +27,15 @@ func NewContextHandler(meta structs.Meta) HttpHandlerContext {
 	}
 }
 
-func (hctx HttpHandlerContext) AddError(key error, value *structs.ErrorResponse) {
-	hctx.E[key] = value
+// AddError map error string with the error response
+func (hctx HttpHandlerContext) AddError(key error, value *ErrorResponse) {
+	hctx.E[key.Error()] = value
 }
 
-func (hctx HttpHandlerContext) AddErrorMap(errMap map[error]*structs.ErrorResponse) {
+// AddErrorMap populate error response from error map
+func (hctx HttpHandlerContext) AddErrorMap(errMap map[error]*ErrorResponse) {
 	for k, v := range errMap {
-		hctx.E[k] = v
+		hctx.E[k.Error()] = v
 	}
 }
 
@@ -44,7 +44,19 @@ type CustomWriter struct {
 }
 
 func (c *CustomWriter) Write(w http.ResponseWriter, data interface{}, nextPage *string) {
-	var successResp structs.SuccessResponse
+	var successResp SuccessResponse
+	c.setSuccessRespData(data, &successResp)
+
+	successResp.SuccessData.Status = "200"
+	successResp.SuccessData.Message = "OK"
+	successResp.Next = nextPage
+	successResp.Meta = c.C.M
+
+	writeSuccessResponse(w, successResp)
+}
+
+//TODO add explanation detail of what this block code is doing
+func (c *CustomWriter) setSuccessRespData(data interface{}, successResp *SuccessResponse) {
 	voData := reflect.ValueOf(data)
 	arrayData := []interface{}{}
 
@@ -61,11 +73,6 @@ func (c *CustomWriter) Write(w http.ResponseWriter, data interface{}, nextPage *
 		}
 	}
 
-	successResp.ResponseCode = "000000"
-	successResp.Next = nextPage
-	successResp.Meta = c.C.M
-
-	writeSuccessResponse(w, successResp)
 }
 
 // WriteError sending error response based on err type
@@ -73,25 +80,19 @@ func (c *CustomWriter) WriteError(w http.ResponseWriter, err error) {
 	if len(c.C.E) > 0 {
 		errorResponse := LookupError(c.C.E, err)
 		if errorResponse == nil {
-			errorResponse = structs.ErrUnknown
+			errorResponse = ErrUnknown
 		}
 
-		errorResponse.Meta = c.C.M
 		writeErrorResponse(w, errorResponse)
 	} else {
-		var errorResponse *structs.ErrorResponse = &structs.ErrorResponse{}
-		if errors.As(err, &errorResponse) {
-			errorResponse.Meta = c.C.M
-			writeErrorResponse(w, errorResponse)
-		} else {
-			errorResponse = structs.ErrUnknown
-			errorResponse.Meta = c.C.M
-			writeErrorResponse(w, errorResponse)
+		var errorResponse = &ErrorResponse{
+			ErrorType: err,
 		}
+		writeErrorResponse(w, errorResponse)
 	}
 }
 
-func writeResponse(w http.ResponseWriter, response interface{}, contentType string, httpStatus int) {
+func writeJSONResponse(w http.ResponseWriter, response interface{}, httpStatus int) {
 	res, err := json.Marshal(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -99,22 +100,22 @@ func writeResponse(w http.ResponseWriter, response interface{}, contentType stri
 		return
 	}
 
-	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
 	w.Write(res)
 }
 
-func writeSuccessResponse(w http.ResponseWriter, response structs.SuccessResponse) {
-	writeResponse(w, response, "application/json", http.StatusOK)
+func writeSuccessResponse(w http.ResponseWriter, response SuccessResponse) {
+	writeJSONResponse(w, response, http.StatusOK)
 }
 
-func writeErrorResponse(w http.ResponseWriter, errorResponse *structs.ErrorResponse) {
-	writeResponse(w, errorResponse, "application/json", errorResponse.HttpStatus)
+func writeErrorResponse(w http.ResponseWriter, errorResponse *ErrorResponse) {
+	writeJSONResponse(w, errorResponse, errorResponse.HttpStatus)
 }
 
 // LookupError will get error message based on error type, with variables if you want give dynamic message error
-func LookupError(lookup map[error]*structs.ErrorResponse, err error) (res *structs.ErrorResponse) {
-	if msg, ok := lookup[err]; ok {
+func LookupError(lookup map[string]*ErrorResponse, err error) (res *ErrorResponse) {
+	if msg, ok := lookup[err.Error()]; ok {
 		res = msg
 	}
 

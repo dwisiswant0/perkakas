@@ -9,12 +9,11 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-go/statsd"
-	zlog "github.com/kitabisa/perkakas/v2/log"
 )
 
-type HandlerOption func(*HttpHandler)
+type HandlerOption func(*PerkakasHttpHandler)
 
-type HttpHandler struct {
+type PerkakasHttpHandler struct {
 	// H is handler, with return interface{} as data object, *string for token next page, error for error type
 	H func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)
 	CustomWriter
@@ -22,9 +21,9 @@ type HttpHandler struct {
 	ServiceName string
 }
 
-func NewHttpHandler(c HttpHandlerContext, opts ...HandlerOption) func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) HttpHandler {
-	return func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) HttpHandler {
-		h := HttpHandler{H: handler, CustomWriter: CustomWriter{C: c}}
+func NewHttpHandler(c HttpHandlerContext, opts ...HandlerOption) func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) PerkakasHttpHandler {
+	return func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) PerkakasHttpHandler {
+		h := PerkakasHttpHandler{H: handler, CustomWriter: CustomWriter{C: c}}
 
 		// Option paremeters values:
 		for _, opt := range opts {
@@ -37,7 +36,7 @@ func NewHttpHandler(c HttpHandlerContext, opts ...HandlerOption) func(handler fu
 
 // WithMetric wire statsd client to perkakas handler
 func WithMetric(telegrafHost string, telegrafPort int, svcName string) HandlerOption {
-	return func(h *HttpHandler) {
+	return func(h *PerkakasHttpHandler) {
 		host := fmt.Sprintf("%s:%d", telegrafHost, telegrafPort)
 		m, err := statsd.New(host)
 		if err != nil {
@@ -49,7 +48,7 @@ func WithMetric(telegrafHost string, telegrafPort int, svcName string) HandlerOp
 	}
 }
 
-func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h PerkakasHttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	startHandleRequest := time.Now()
 	data, pageToken, err := h.H(w, r)
 
@@ -66,9 +65,9 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			var statusCode int
 			var responseCode string
 
-			if erResp, ok := h.C.E[err]; ok {
+			if erResp, ok := h.C.E[err.Error()]; ok {
 				statusCode = erResp.HttpStatus
-				responseCode = erResp.Response.ResponseCode
+				responseCode = erResp.Code
 			}
 
 			var status string
@@ -91,8 +90,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			h.Metric.Incr(table, tag, 1)
 		}
 
-		zlog.Zlogger(r.Context()).Err(err).Msgf("Response: %+v", data)
-		h.WriteError(w, err)
+		h.CustomWriter.WriteError(w, err)
 		return
 	}
 

@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/kitabisa/perkakas/v2/ctxkeys"
+	"github.com/kitabisa/perkakas/v3/perkakas-log/ctxkeys"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
