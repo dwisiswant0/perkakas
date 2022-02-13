@@ -1,4 +1,4 @@
-module github.com/kitabisa/perkakas/http
+module github.com/kitabisa/perkakas/http-v2
 
 go 1.16
 
