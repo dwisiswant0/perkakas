@@ -2,23 +2,23 @@ package http
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"reflect"
 )
 
 type HttpHandlerContext struct {
 	M Meta
-	E map[error]*ErrorResponse
+	E map[string]*ErrorResponse
 }
 
+//NewContextHandler add base error response
 func NewContextHandler(meta Meta) HttpHandlerContext {
-	var errMap map[error]*ErrorResponse = map[error]*ErrorResponse{
+	var errMap = map[string]*ErrorResponse{
 		// register general error here, so if there are new general error you must add it here
-		ErrInvalidHeader:          ErrInvalidHeader,
-		ErrUnauthorized:           ErrUnauthorized,
-		ErrInvalidHeaderSignature: ErrInvalidHeaderSignature,
-		ErrInvalidHeaderTime:      ErrInvalidHeaderTime,
+		ErrInvalidHeader.ErrorType.Error():          ErrInvalidHeader,
+		ErrUnauthorized.ErrorType.Error():           ErrUnauthorized,
+		ErrInvalidHeaderSignature.ErrorType.Error(): ErrInvalidHeaderSignature,
+		ErrInvalidHeaderTime.ErrorType.Error():      ErrInvalidHeaderTime,
 	}
 
 	return HttpHandlerContext{
@@ -27,13 +27,15 @@ func NewContextHandler(meta Meta) HttpHandlerContext {
 	}
 }
 
+// AddError map error string with the error response
 func (hctx HttpHandlerContext) AddError(key error, value *ErrorResponse) {
-	hctx.E[key] = value
+	hctx.E[key.Error()] = value
 }
 
+// AddErrorMap populate error response from error map
 func (hctx HttpHandlerContext) AddErrorMap(errMap map[error]*ErrorResponse) {
 	for k, v := range errMap {
-		hctx.E[k] = v
+		hctx.E[k.Error()] = v
 	}
 }
 
@@ -43,6 +45,18 @@ type CustomWriter struct {
 
 func (c *CustomWriter) Write(w http.ResponseWriter, data interface{}, nextPage *string) {
 	var successResp SuccessResponse
+	c.setSuccessRespData(data, &successResp)
+
+	successResp.SuccessData.Status = "200"
+	successResp.SuccessData.Message = "OK"
+	successResp.Next = nextPage
+	successResp.Meta = c.C.M
+
+	writeSuccessResponse(w, successResp)
+}
+
+//TODO add explanation detail of what this block code is doing
+func (c *CustomWriter) setSuccessRespData(data interface{}, successResp *SuccessResponse) {
 	voData := reflect.ValueOf(data)
 	arrayData := []interface{}{}
 
@@ -59,11 +73,6 @@ func (c *CustomWriter) Write(w http.ResponseWriter, data interface{}, nextPage *
 		}
 	}
 
-	successResp.ResponseCode = "000000"
-	successResp.Next = nextPage
-	successResp.Meta = c.C.M
-
-	writeSuccessResponse(w, successResp)
 }
 
 // WriteError sending error response based on err type
@@ -74,22 +83,16 @@ func (c *CustomWriter) WriteError(w http.ResponseWriter, err error) {
 			errorResponse = ErrUnknown
 		}
 
-		errorResponse.Meta = c.C.M
 		writeErrorResponse(w, errorResponse)
 	} else {
-		var errorResponse *ErrorResponse = &ErrorResponse{}
-		if errors.As(err, &errorResponse) {
-			errorResponse.Meta = c.C.M
-			writeErrorResponse(w, errorResponse)
-		} else {
-			errorResponse = ErrUnknown
-			errorResponse.Meta = c.C.M
-			writeErrorResponse(w, errorResponse)
+		var errorResponse = &ErrorResponse{
+			ErrorType: err,
 		}
+		writeErrorResponse(w, errorResponse)
 	}
 }
 
-func writeResponse(w http.ResponseWriter, response interface{}, contentType string, httpStatus int) {
+func writeJSONResponse(w http.ResponseWriter, response interface{}, httpStatus int) {
 	res, err := json.Marshal(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -97,22 +100,22 @@ func writeResponse(w http.ResponseWriter, response interface{}, contentType stri
 		return
 	}
 
-	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
 	w.Write(res)
 }
 
 func writeSuccessResponse(w http.ResponseWriter, response SuccessResponse) {
-	writeResponse(w, response, "application/json", http.StatusOK)
+	writeJSONResponse(w, response, http.StatusOK)
 }
 
 func writeErrorResponse(w http.ResponseWriter, errorResponse *ErrorResponse) {
-	writeResponse(w, errorResponse, "application/json", errorResponse.HttpStatus)
+	writeJSONResponse(w, errorResponse, errorResponse.HttpStatus)
 }
 
 // LookupError will get error message based on error type, with variables if you want give dynamic message error
-func LookupError(lookup map[error]*ErrorResponse, err error) (res *ErrorResponse) {
-	if msg, ok := lookup[err]; ok {
+func LookupError(lookup map[string]*ErrorResponse, err error) (res *ErrorResponse) {
+	if msg, ok := lookup[err.Error()]; ok {
 		res = msg
 	}
 

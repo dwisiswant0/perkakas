@@ -7,29 +7,30 @@ type Meta struct {
 	APIEnv  string `json:"api_env" mapstructure:"api_env"`
 }
 
+type Response struct {
+	ResponseCode string       `json:"response_code" mapstructure:"response_code"`
+	ResponseDesc ResponseDesc `json:"response_desc" mapstructure:"response_desc"`
+	Meta         Meta         `json:"meta" mapstructure:"meta"`
+}
+
 type SuccessResponse struct {
-	SuccessData
-	Next *string `json:"next,omitempty" mapstructure:"next,omitempty"`
-	Meta Meta    `json:"meta" mapstructure:"meta"`
+	Response
+	Next *string     `json:"next,omitempty" mapstructure:"next,omitempty"`
+	Data interface{} `json:"data,omitempty" mapstructure:"data,omitempty"`
 }
 
-type SuccessData struct {
-	Status  string      `json:"status" mapstructure:"status"`
-	Message string      `json:"message" mapstructure:"message"`
-	Data    interface{} `json:"data,omitempty" mapstructure:"data,omitempty"`
-}
-
+// error Response
 type ErrorResponse struct {
-	ErrorData  `json:"error" mapstructure:"error"`
-	ErrorType  error `json:"-"`
-	HttpStatus int   `json:"-"`
-}
-
-type ErrorData struct {
-	Message string `json:"message"`
-	Code    string `json:"error_code"`
+	Response
+	HttpStatus int `json:"-"`
 }
 
 func (e *ErrorResponse) Error() string {
-	return e.ErrorType.Error()
+	return e.ResponseDesc.EN
+}
+
+// ResponseDesc defines details data response
+type ResponseDesc struct {
+	ID string `json:"id" mapstructure:"id"`
+	EN string `json:"en" mapstructure:"en"`
 }
