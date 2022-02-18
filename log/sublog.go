@@ -12,8 +12,8 @@ import (
 // TODO: TO BE DEPRECATED after v2.14.6
 func GetSublogger(ctx context.Context, ctxName string) zerolog.Logger {
 	reqID := ""
-	if ctx.Value(ctxkeys.CtxXKtbsRequestID) != nil {
-		reqID = ctx.Value(ctxkeys.CtxXKtbsRequestID).(string)
+	if ctx.Value(ctxkeys.CtxXKtbsRequestID.String()) != nil {
+		reqID = ctx.Value(ctxkeys.CtxXKtbsRequestID.String()).(string)
 	}
 
 	return log.With().
