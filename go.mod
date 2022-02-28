@@ -25,6 +25,7 @@ require (
 	github.com/graphql-go/graphql v0.8.0
 	github.com/im7mortal/kmutex v1.0.0
 	github.com/influxdata/influxdb1-client v0.0.0-20190809212627-fc22c7df067e
+	github.com/microcosm-cc/bluemonday v1.0.18 // indirect
 	github.com/minio/minio-go/v6 v6.0.45
 	github.com/o1egl/paseto v1.0.0
 	github.com/olivere/elastic/v7 v7.0.9
@@ -42,7 +43,7 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210817190340-bfb29a6856f2 // indirect
-	golang.org/x/text v0.3.3
+	golang.org/x/text v0.3.6
 	google.golang.org/api v0.17.0
 	google.golang.org/grpc v1.27.0
 	gopkg.in/h2non/gock.v1 v1.0.15
